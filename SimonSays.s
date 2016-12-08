@@ -8,6 +8,14 @@ ORG 0
 ;SEQUENCE 0, 0.5, intro
 ;--------------------------------------------------------------
 ;--------------------------------------------------------------
+LDA start
+STA bargraph
+seq1key0
+LDA keyrow2
+SUB rightGreenButton
+JNE seq1key0
+;--------------------------------------------------------------
+;--------------------------------------------------------------
 seq0           ; waiting 0.5 secs between showing the lights
 
 ;bargraph
@@ -222,26 +230,45 @@ seq1key8
 LDA keyrow2
 SUB rightGreenButton
 JNE seq1key8
+;light up the corresponding light
+LDA rG
+STA lights
 
 seq1key9
 LDA keyrow3
 SUB rightOrangeButton
 JNE seq1key9
 
+;light up the corresponding light
+LDA rGO
+STA lights
+
 seq1key10
 LDA keyrow4
 SUB rightRedButton
 JNE seq1key10
+
+;light up the corresponding light
+LDA rGOR
+STA lights
 
 seq1key11
 LDA keyrow4
 SUB leftRedButton
 JNE seq1key11
 
+;light up the corresponding light
+LDA rGORlR
+STA lights
+
 seq1key12
 LDA keyrow3
 SUB leftOrangeButton
 JNE seq1key12
+
+;light up the corresponding light
+LDA lO
+STA lights
 ;--------------------------------------------------------------
 LDA lOSoundZeroThree
 STA buzzer
@@ -335,42 +362,68 @@ seq1key13
 LDA keyrow2
 SUB rightGreenButton
 JNE seq1key13
+;light up the corresponding light
+LDA rG
+STA lights
 
 seq1key14
 LDA keyrow3
 SUB rightOrangeButton
 JNE seq1key14
+;light up the corresponding light
+LDA rGO
+STA lights
 
 seq1key15
 LDA keyrow4
 SUB rightRedButton
 JNE seq1key15
+;light up the corresponding light
+LDA rGOR
+STA lights
 
 seq1key16
 LDA keyrow4
 SUB leftRedButton
 JNE seq1key16
+;light up the corresponding light
+LDA rGORlR
+STA lights
 
 seq1key17
 LDA keyrow3
 SUB leftOrangeButton
 JNE seq1key17
+;light up the corresponding light
+LDA rGORlRO
+STA lights
 
 seq1key18
 LDA keyrow4
 SUB leftRedButton
 JNE seq1key18
+;light up the corresponding light
+LDA rGORlO
+STA lights
+
 
 seq1key19
 LDA keyrow2
 SUB leftGreenButton
 JNE seq1key19
+;light up the corresponding light
+LDA rGORlGO
+STA lights
+
 
 seq1key20
 LDA keyrow4
 SUB rightRedButton
 JNE seq1key20
-
+LDA rGOlGO
+;light up the ending light
+LDA noColor
+STA lights
 ;--------------------------------------------------------------
 ;--------------------------------------------------------------
 
@@ -401,7 +454,14 @@ leftRedButton      DEFW &0080        ;A (keyrow 4)
 rG                 DEFW &0001
 rGO                DEFW &0003
 rGOR               DEFW &0007
+rGORlR             DEFW &27
+rGORlRO            DEFW &37
+rGORlGO            DEFW &1F
+rGORlO             DEFW &17
+rGOlGO             DEFW &1B
+rR                 DEFW &0004
 lR                 DEFW &0020
+lO                 DEFW &0010
 
 ; Defining sounds for lights with 0.5 sec delay
 ; Values to be written to buzzer
@@ -440,9 +500,12 @@ lOSoundZeroTwo     DEFW &8251
 lRSoundZeroTwo     DEFW &8252
 
 ; Defining bargraph for levels
+start              DEFW &FF
 level_one          DEFW &81
 level_two          DEFW &C3
 level_three        DEFW &E7
+level_four         DEFW &FF
+zero               DEFW &0000
 ; easy to access variables
 lights             EQU  &FFF
 buzzer             EQU  &FFD
